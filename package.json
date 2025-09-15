@@ -4,8 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev:ui": "yarn --cwd frontend dev",
-    "dev:server": "yarn --cwd backend dev",
+    "dev:ui": "yarn --cwd front-end dev",
+    "dev:server": "yarn --cwd back-end start:dev",
     "dev": "concurrently \"yarn dev:ui\" \"yarn dev:server\""
   },
   "dependencies": {
