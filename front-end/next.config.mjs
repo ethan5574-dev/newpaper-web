@@ -11,8 +11,12 @@ if (envs) {
   console.log(`Website Url: ${process.env.NEXT_PUBLIC_FE_URL}`);
 }
 
+/** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
+  trailingSlash: true,
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
