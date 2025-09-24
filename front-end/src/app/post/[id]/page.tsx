@@ -1,12 +1,8 @@
 import { Eye } from 'lucide-react';
 import Image from 'next/image';
 
-type PageProps = {
-    params: { id: string };
-};
-
-export default function PostDetailPage({ params }: PageProps) {
-    const { id } = params;
+export default async function PostDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
 
     // Fake data for demo UI
     const post = {
