@@ -13,7 +13,6 @@ export class Users {
   password_hash: string;
 
   @Column({ length: 120, nullable: true })
-  @Column({ length: 120, nullable: true })
   username: string;
 
   @Column({ 

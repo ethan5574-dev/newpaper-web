@@ -13,8 +13,8 @@ if (envs) {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
-  trailingSlash: true,
+  // output: 'export', // Removed to allow dynamic routing
+  trailingSlash: false,
   images: {
     unoptimized: true,
     remotePatterns: [

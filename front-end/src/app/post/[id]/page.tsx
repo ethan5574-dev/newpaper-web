@@ -1,31 +1,55 @@
+"use client";
 import { Eye } from 'lucide-react';
 import Image from 'next/image';
+import {getPost} from '@/fetching/post';
+import { incrementView } from '@/fetching/view';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import Loading from '@/app/loading';
+import { useParams } from 'next/navigation';
+import { useEffect } from 'react';
 
-export default async function PostDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
 
-    // Fake data for demo UI
-    const post = {
-        id,
-        title: 'Create Meaningful Family Moments',
-        author: 'Jane Doe',
-        date: 'September 20, 2025',
-        readTime: '7 min read',
-        cover:
-            'https://cdn-media.sforum.vn/storage/app/media/anh-dep-13.jpg',
-        content: [
-            'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus delectus nisi soluta repellendus earum, eaque quam perspiciatis, obcaecati nam ducimus.',
-            'Nesciunt nobis, similique iusto provident amet illo delectus at dolores eveniet reiciendis adipisci, autem ullam. Explicabo, ipsam. Optio illo ipsa accusantium.',
-            'Ullam numquam quasi, pariatur mollitia saepe recusandae laboriosam rem, cumque excepturi ipsum obcaecati sapiente. Ducimus impedit omnis repellendus ipsum architecto.',
-        ],
-    };
+const Page = ()=> {
+  const { id } = useParams();
+    const { data: post, isLoading: isPostLoading, isError: isPostError } = useQuery({
+        queryKey: ['post', id],
+        queryFn: () => getPost(Number(id)),
+    });
+    const { mutate: incrementViewMutation } = useMutation({
+        mutationFn: (postId: number) => incrementView(postId),
+    });
+
+    // Auto increment view when page loads
+    useEffect(() => {
+        if (id && !isPostLoading && !isPostError) {
+            incrementViewMutation(Number(id));
+        }
+    }, [id, isPostLoading, isPostError, incrementViewMutation]);
+
+    if (isPostLoading) {
+        return <Loading/>   ;
+    }
+    
+    if (isPostError || !post?.data) {
+        return (
+            <div className="mt-16 px-4 py-8 sm:py-12 bg-zinc-100">
+                <div className="mx-auto max-w-[900px] text-center">
+                    <h1 className="text-2xl font-bold text-zinc-900">Post not found</h1>
+                    <p className="mt-2 text-zinc-600">The post you&apos;re looking for doesn&apos;t exist.</p>
+                </div>
+            </div>
+        );
+    }
+
+    const postData = post?.data;
+    const stripHtml = (html?: string) => (html ? html.replace(/<[^>]+>/g, '') : '');
 
     return (
         <article className=" mt-16 px-4 py-8 sm:py-12 bg-zinc-100">
             {/* Title */}
             <div className="mx-auto max-w-[900px]">
                 <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900 sm:text-4xl">
-                    {post.title}
+                    {postData.title}
                 </h1>
 
                 {/* Meta */}
@@ -33,54 +57,44 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                     <div className="flex items-center gap-3">
                         <Image
                             src="https://randomuser.me/api/portraits/women/65.jpg"
-                            alt={post.author}
+                            alt={postData.author?.username || 'Author'}
                             width={36}
                             height={36}
                             className="rounded-full"
                         />
-                        <span className="text-xl text-zinc-900 font-bold">{post.author}</span>
+                        <span className="text-xl text-zinc-900 font-bold">{postData.author?.username || 'Unknown'}</span>
                     </div>
                     <span className="text-zinc-400 font-bold ">•</span>
-                    <span className="text-zinc-700 font-bold ">{post.date}</span>
-                    <span className="text-zinc-400 ">•</span>
-                    <span className="text-zinc-700 ">{post.readTime}</span>
+                    <span className="text-zinc-700 font-bold ">{new Date(postData.createdAt).toLocaleDateString()}</span>
                     <span className="text-zinc-400 ">•</span>
                     <span className="flex items-center gap-1 text-zinc-700">
                         <Eye className="h-4 w-4" />
-                        1,234 views
+                        {postData.total_view_count?.toLocaleString() || 0} views
                     </span>
                 </div>
 
                 {/* Cover image */}
-                <div className="relative mt-6 overflow-hidden rounded-lg">
-                    <Image
-                        src={post.cover}
-                        alt={post.title}
-                        width={1600}
-                        height={900}
-                        className="h-[240px] w-full object-cover sm:h-[360px] md:h-[420px]"
-                    />
-                </div>
+                {postData.image_url && (
+                    <div className="relative mt-6 overflow-hidden rounded-lg">
+                        <Image
+                            src={postData.image_url}
+                            alt={postData.title}
+                            width={1600}
+                            height={900}
+                            className="h-[240px] w-full object-cover sm:h-[360px] md:h-[420px]"
+                        />
+                    </div>
+                )}
 
                 {/* Content */}
                 <div className="prose prose-zinc mt-8 max-w-none text-zinc-900">
-                    <p>{post.content[0]}</p>
-                    <p>{post.content[1]}</p>
-                    <blockquote>
-                        Good design is making something intelligible and memorable. Great design is making something
-                        memorable and meaningful.
-                    </blockquote>
-                    <p>{post.content[2]}</p>
+                    <div dangerouslySetInnerHTML={{ __html: postData.content }} />
                 </div>
             </div>
         </article>
     );
 }
+export default Page;
 
-// Next.js static export requires pre-defined params for dynamic routes
-export async function generateStaticParams() {
-    // TODO: Replace with real IDs from your API at build time
-    return [{ id: '1' }, { id: '2' }, { id: '3' }];
-}
 
 

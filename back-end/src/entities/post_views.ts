@@ -1,23 +1,26 @@
-import { 
-  Entity, 
-  PrimaryGeneratedColumn, 
-  Column, 
-  CreateDateColumn, 
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
   UpdateDateColumn,
-  OneToMany
+  Index,
 } from 'typeorm';
-import { Post } from './posts.entity';
 
 @Entity({ name: 'post_views' })
+@Index('UX_post_bucket', ['post_id', 'bucket_start'], { unique: true })
 export class PostViews {
   @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
   post_id: number;
 
   @Column({ nullable: true })
   view_count: number;
 
-  @OneToMany(() => Post, post => post.post_id)
-  post: Post;
+  @Column({ type: 'timestamp' })
+  bucket_start: Date;
 
   @CreateDateColumn()
   createdAt: Date;

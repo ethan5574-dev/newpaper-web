@@ -4,7 +4,6 @@ import React, { ReactNode, useEffect } from 'react';
 import Header from './Header';
 import useMounted from '@/hook/useMounted';
 import Loading from '@/app/loading';
-import useScaleLayout from '@/hook/useScaleLayout';
 
 
 const Layout = ({ children }: { children: ReactNode }) => {

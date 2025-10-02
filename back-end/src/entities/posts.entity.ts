@@ -18,11 +18,17 @@ export class Post {
   @Column({ nullable: true })
   author_id: number;
 
-  @Column({ nullable: true })
+  @Column({ type: 'int', default: 0 })
   total_view_count: number;
 
   @Column({ length: 255 })
   title: string;
+
+  @Column({ nullable: true })
+  image_url: string;
+
+  @Column({ nullable: true })
+  isDeleted: boolean;
 
   @Column({ type: 'text' })
   content: string;

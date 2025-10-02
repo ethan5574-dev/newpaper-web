@@ -18,6 +18,10 @@ export default () => ({
     s3Bucket: process.env.S3_BUCKET,
     s3Endpoint: process.env.S3_ENDPOINT,
   },
+  jwt: {
+    secret: process.env.JWT_SECRET ?? 'your-secret-key-change-in-production',
+    expiresIn: process.env.JWT_EXPIRES_IN ?? '24h',
+  },
 });
 
 

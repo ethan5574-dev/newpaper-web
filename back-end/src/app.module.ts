@@ -6,7 +6,9 @@ import { HealthModule } from './modules/health/health.module';
 import { UsersModule } from './modules/users/users.module';
 import { PostsModule } from './modules/posts/posts.module';
 import { UploadModule } from './modules/upload/upload.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ViewsModule } from './modules/view/views.module';
 
 @Module({
   imports: [
@@ -34,7 +36,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     UsersModule,
     PostsModule,
     UploadModule,
-  ],
+    AuthModule,
+    ViewsModule,
+    ],
   controllers: [],
   providers: [],
 })

@@ -8,7 +8,10 @@ import { setupSwagger } from './bootstrap/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: '*',
+    origin: ['http://localhost:3000', 'https://tranvanhau.id.vn'], 
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'ngrok-skip-browser-warning'],
   });
   app.useGlobalPipes(
     new ValidationPipe({
@@ -23,7 +26,7 @@ async function bootstrap() {
   app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
   setupSwagger(app);
 
-  const port = Number(process.env.PORT ?? 3003);
+  const port = Number(process.env.PORT ?? 3001);
   await app.listen(port);
   // eslint-disable-next-line no-console
   console.log(`API is running at http://localhost:${port}`);
