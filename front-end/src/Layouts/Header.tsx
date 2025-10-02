@@ -35,7 +35,9 @@ const Header: React.FC = () => {
             setShowAuthModal(false);
         },
         onError: (err: any) => {
-            toastError(err);
+            // Log the error message from the API response
+            const errorMessage = err?.response?.data?.message?.message || err?.message || 'An error occurred';
+            toastError(errorMessage);
         },
     });
 
@@ -52,7 +54,8 @@ const Header: React.FC = () => {
             setProfile(res?.data?.user);
         },
         onError: (err: any) => {
-            toastError(err);
+            const errorMessage = err?.response?.data?.message?.message || err?.message || 'An error occurred';
+            toastError(errorMessage);
         },
     });
 
@@ -248,7 +251,14 @@ const Header: React.FC = () => {
                             />
                         </div>
                         {loginMutation.isError && (
-                            <p className="text-xs text-red-600">{(loginMutation.error as any)?.response?.data?.message || 'Login failed'}</p>
+                            <p className="text-xs text-red-600">
+                                {(() => {
+                                    const raw = (loginMutation.error as any)?.response?.data?.message;
+                                    if (typeof raw === 'string') return raw;
+                                    if (raw && typeof raw === 'object') return raw.message || JSON.stringify(raw);
+                                    return 'Login failed';
+                                })()}
+                            </p>
                         )}
                         <button
                             onClick={() => loginMutation.mutate()}
@@ -293,7 +303,14 @@ const Header: React.FC = () => {
                             />
                         </div>
                         {registerMutation.isError && (
-                            <p className="text-xs text-red-600">{(registerMutation.error as any)?.response?.data?.message || 'Register failed'}</p>
+                            <p className="text-xs text-red-600">
+                                {(() => {
+                                    const raw = (registerMutation.error as any)?.response?.data?.message;
+                                    if (typeof raw === 'string') return raw;
+                                    if (raw && typeof raw === 'object') return raw.message || JSON.stringify(raw);
+                                    return 'Register failed';
+                                })()}
+                            </p>
                         )}
                         <button
                             onClick={() => registerMutation.mutate()}
