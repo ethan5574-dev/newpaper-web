@@ -1,0 +1,16 @@
+services:
+  frontend:
+    build: ./front-end
+    container_name: frontend
+    ports:
+      - "3000:3000"       # user truy cập http://domain.com
+    restart: always
+
+  backend:
+    build: ./back-end
+    container_name: backend
+    ports:
+      - "3001:3000"   # user truy cập http://domain.com:3001
+    restart: always
+
+
